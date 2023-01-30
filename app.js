@@ -1,10 +1,7 @@
-const http = require('http')
+import express from 'express'
 
-http
-  .createServer((req, res) => {
-    res.write('Olá api')
-    res.end()
-  })
-  .listen(3333, () => {
-    console.log('listening on http://localhost3333')
-  })
+const app = express()
+
+app.listen(1000, () => {
+  console.log('listening on port 3333')
+})
