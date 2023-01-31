@@ -9,6 +9,10 @@ const clienteSchema = new mongoose.Schema({
   },
   dateAndHours: {
     type: Date,
+    default: Date.now(),
+  },
+  description: {
+    type: String,
   },
 })
 

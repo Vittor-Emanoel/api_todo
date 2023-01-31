@@ -4,6 +4,11 @@ import clientes from './src/models/Cliente.js'
 
 const app = express()
 
+db.on('error', console.log.bind(console, 'Erro de conexão'))
+db.once('open', () => {
+  console.log('Conexão com o banco feita com sucesso')
+})
+
 app.use(express.json())
 
 app.use((req, res, next) => {
@@ -14,11 +19,6 @@ app.use((req, res, next) => {
     'X-Requested-With,content-type, Authorization'
   )
   next()
-})
-
-db.on('error', console.log.bind(console, 'Erro de conexão'))
-db.once('open', () => {
-  console.log('Conexão com o banco feita com sucesso')
 })
 
 const schedules = [
@@ -47,21 +47,41 @@ app.get('/agendamentos', (req, res) => {
 })
 
 app.post('/agendamentos', (req, res) => {
-  schedules.push(req.body)
-  res.status(201).send('Novo Cliente cadastrado!')
+  let cliente = new clientes(req.body)
+
+  cliente.save((err) => {
+    if (err) {
+      res
+        .status(500)
+        .send({ message: `${err}- falha ao cadastrar o novo cliente.` })
+    } else {
+      res.status(201).send(cliente.toJSON())
+    }
+  })
 })
 
 app.put('/agendamentos/:id', (req, res) => {
-  let index = buscandoPorId(req.params.id)
-  schedules[index] = req.body
-  res.json(schedules)
+  const id = req.params.id
+
+  clientes.findByIdAndUpdate(id, { $set: req.body }, (err) => {
+    if (!err) {
+      res.status(200).send({ message: 'cliente editado com successo!' })
+    } else {
+      res.status(500).send({ message: `${err} - ao cadastrar o cliente` })
+    }
+  })
 })
 
 app.delete('/agendamentos/:id', (req, res) => {
   const id = req.params.id
-  let index = buscandoPorId(id)
-  schedules.splice(index, 1)
-  res.send(`Agendamento ${id} excluido com successo!`)
+
+  clientes.findByIdAndDelete(id, (err) => {
+    if (!err) {
+      res.status(200).send({ message: 'cliente removido com succeso!' })
+    } else {
+      res.status(500).send({ message: `${err} - ao remover o cliente` })
+    }
+  })
 })
 
 function buscandoPorId(id) {
