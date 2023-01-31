@@ -1,4 +1,6 @@
 import express from 'express'
+import db from './src/config/dbConnect.js'
+import clientes from './src/models/Cliente.js'
 
 const app = express()
 
@@ -12,6 +14,11 @@ app.use((req, res, next) => {
     'X-Requested-With,content-type, Authorization'
   )
   next()
+})
+
+db.on('error', console.log.bind(console, 'Erro de conexão'))
+db.once('open', () => {
+  console.log('Conexão com o banco feita com sucesso')
 })
 
 const schedules = [
@@ -34,7 +41,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/agendamentos', (req, res) => {
-  res.status(200).json(schedules)
+  clientes.find((err, clientes) => {
+    res.status(200).json(clientes)
+  })
 })
 
 app.post('/agendamentos', (req, res) => {
