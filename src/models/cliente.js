@@ -7,9 +7,8 @@ const clienteSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  dateAndHours: {
+  date: {
     type: Date,
-    default: Date.now(),
   },
   description: {
     type: String,
