@@ -13,7 +13,7 @@ app.use(express.json())
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
   res.setHeader(
     'Access-Control-Allow-Headers',
     'X-Requested-With,content-type, Authorization'
@@ -77,9 +77,9 @@ app.delete('/agendamentos/:id', (req, res) => {
 
   clientes.findByIdAndDelete(id, (err) => {
     if (!err) {
-      res.status(200).send({ message: 'cliente removido com succeso!' })
+      res.status(202).send({ message: 'cliente removido com succeso!' })
     } else {
-      res.status(500).send({ message: `${err} - ao remover o cliente` })
+      res.status(202).send({ message: `${err} - ao remover o cliente` })
     }
   })
 })
