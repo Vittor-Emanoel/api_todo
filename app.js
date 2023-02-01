@@ -1,6 +1,6 @@
 import express from 'express'
 import db from './src/config/dbConnect.js'
-import clientes from './src/models/Cliente.js'
+import clientes from './src/models/cliente.js'
 
 const app = express()
 
