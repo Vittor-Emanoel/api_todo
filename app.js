@@ -50,12 +50,20 @@ app.post('/agendamentos', (req, res) => {
   try {
     let cliente = new clientes(req.body)
 
-    if (!cliente.name && !cliente.date && !cliente.description) {
+    if (!cliente.name) {
       return res.status(400).json({
-        error: 'Campos obrigatórios',
+        error: 'nome obrigatório',
       })
     }
-
+    if (!cliente.date) {
+      return res.status(400).json({
+        error: 'date obrigatória',
+      })
+    } else if (!cliente.description) {
+      return res.status(400).json({
+        error: 'descrição Obrigatória',
+      })
+    }
     cliente.save((err) => {
       if (err) {
         res
