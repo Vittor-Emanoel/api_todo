@@ -21,20 +21,20 @@ app.use((req, res, next) => {
   next()
 })
 
-const schedules = [
-  {
-    id: 1,
-    name: 'Ana Lucia',
-    hours: Date.now(),
-    description: 'Fazer uma escova',
-  },
-  {
-    id: 2,
-    name: 'Vânia',
-    hours: Date.now(),
-    description: 'Fazer uma progressiva',
-  },
-]
+// const schedules = [
+//   {
+//     id: 1,
+//     name: 'Ana Lucia',
+//     hours: Date.now(),
+//     description: 'Fazer uma escova',
+//   },
+//   {
+//     id: 2,
+//     name: 'Vânia',
+//     hours: Date.now(),
+//     description: 'Fazer uma progressiva',
+//   },
+// ]
 
 app.get('/', (req, res) => {
   res.send('Hello, welcome to my api server')
@@ -47,17 +47,27 @@ app.get('/agendamentos', (req, res) => {
 })
 
 app.post('/agendamentos', (req, res) => {
-  let cliente = new clientes(req.body)
+  try {
+    let cliente = new clientes(req.body)
 
-  cliente.save((err) => {
-    if (err) {
-      res
-        .status(500)
-        .send({ message: `${err}- falha ao cadastrar o novo cliente.` })
-    } else {
-      res.status(201).send(cliente.toJSON())
+    if (!cliente.name && !cliente.date && !cliente.description) {
+      return res.status(400).json({
+        error: 'Campos obrigatórios',
+      })
     }
-  })
+
+    cliente.save((err) => {
+      if (err) {
+        res
+          .status(500)
+          .send({ message: `${err}- falha ao cadastrar o novo cliente.` })
+      } else {
+        res.status(201).send(cliente.toJSON())
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 app.put('/agendamentos/:id', (req, res) => {
