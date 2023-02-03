@@ -46,6 +46,17 @@ app.get('/agendamentos', (req, res) => {
   })
 })
 
+app.get('/agendamentos/:id', (req, res) => {
+  let dados = req.params.id
+  clientes.findById(dados, (err, clientes) => {
+    if (err) {
+      res.status(400).send({ message: `${err} - id não encontrado` })
+    } else {
+      res.status(200).json(clientes)
+    }
+  })
+})
+
 app.post('/agendamentos', (req, res) => {
   try {
     let cliente = new clientes(req.body)
