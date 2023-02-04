@@ -89,16 +89,29 @@ app.post('/agendamentos', (req, res) => {
   }
 })
 
-app.put('/agendamentos/:id', (req, res) => {
+app.patch('/agendamentos/:id', (req, res) => {
   const id = req.params.id
 
-  clientes.findByIdAndUpdate(id, { $set: req.body }, (err) => {
-    if (!err) {
-      res.status(200).send({ message: 'cliente editado com successo!' })
-    } else {
-      res.status(500).send({ message: `${err} - ao cadastrar o cliente` })
-    }
-  })
+  clientes
+    .findByIdAndUpdate(
+      id,
+      {
+        name: req.body.name,
+        date: req.body.date,
+        description: req.body.description,
+      },
+      { new: true }
+    )
+    .then((cliente) => {
+      if (!clientes) {
+        res.status(404).send({ message: 'id não encontrado' })
+      }
+
+      res.status(200).send({ message: 'atualizado', cliente })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 
 app.delete('/agendamentos/:id', (req, res) => {
